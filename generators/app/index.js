@@ -32,18 +32,22 @@ module.exports = class extends Generator {
 	}
 
 	initializing() {
+		if(this.opts.bluemix === undefined) {
+			this.opts.prompt = true;
+			this.opts.bluemix = {};
+			this.opts.buildType = this.opts.buildType || 'maven';
+		}
 		this.composeWith(require.resolve('../dockertools'), this.opts);
 		this.composeWith(require.resolve('../kubernetes'), this.opts);
 		this.composeWith(require.resolve('../cloudfoundry'), this.opts);
 	}
 
 	prompting() {
-		if (this.opts.bluemix !== undefined) {
+		if (!this.opts.prompt) {
 			return;
 		}
 		const prompts = [];
-		if (this.opts.bluemix === undefined) {
-			this.opts.bluemix = {};
+		if (this.opts.prompt) {
 			prompts.push({
 				type: 'input',
 				name: 'name',
